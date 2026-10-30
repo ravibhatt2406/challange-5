@@ -8,7 +8,8 @@ import type { IdeaStatus } from '../../shared/constants/statusEnums.js';
 
 type SqliteRow = Record<string, unknown>;
 
-const databasePath = resolve(process.env['SQLITE_PATH'] || 'data/eventcraft.sqlite');
+const defaultDatabasePath = process.env['VERCEL'] ? '/tmp/eventcraft.sqlite' : 'data/eventcraft.sqlite';
+const databasePath = resolve(process.env['SQLITE_PATH'] || defaultDatabasePath);
 let database: DatabaseSync | null = null;
 
 /** Provides the local, file-backed database used when Supabase is not configured. */

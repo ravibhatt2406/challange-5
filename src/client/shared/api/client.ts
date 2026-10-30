@@ -2,9 +2,11 @@
 // API Client — HTTP Wrapper
 // ===========================================
 
-// Keep the browser client relative to the deployed origin so Vite and the
-// production server can share the same API contract without exposing secrets.
-const API_BASE = '/api';
+// Keep the browser client relative to the deployed origin by default so Vite, Vercel,
+// and the production server can share the same API contract without exposing secrets,
+// while allowing VITE_API_BASE_URL override for external API hosting.
+const rawApiBase = (import.meta.env['VITE_API_BASE_URL'] as string | undefined)?.trim();
+const API_BASE = rawApiBase ? rawApiBase.replace(/\/+$/, '') : '/api';
 
 interface ApiError {
   error: string;
@@ -48,7 +50,10 @@ async function request<T>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const url = `${API_BASE}${endpoint}`;
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = API_BASE.startsWith('http')
+    ? (API_BASE.endsWith('/api') ? `${API_BASE}${normalizedEndpoint}` : `${API_BASE}/api${normalizedEndpoint}`)
+    : `${API_BASE}${normalizedEndpoint}`;
   const anonId = getStoredAnonId();
 
   const res = await fetch(url, {

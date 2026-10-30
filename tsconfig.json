@@ -30,6 +30,6 @@
       "@server/*": ["./src/server/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "api"],
   "exclude": ["src/client/test", "**/*.test.ts", "**/*.test.tsx", "tests"]
 }

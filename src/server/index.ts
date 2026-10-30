@@ -36,28 +36,37 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json({ limit: '1mb' }));
-app.use('/api', requestContext);
-app.use('/api', deploymentGuard);
-app.use('/api', resolveIdentity);
+app.use(['/api', '/'], requestContext);
+app.use(['/api', '/'], deploymentGuard);
+app.use(['/api', '/'], resolveIdentity);
 
 // ===========================================
-// API Routes
+// API Routes (mounted with and without /api prefix for Vercel Serverless Function compatibility)
 // ===========================================
 app.use('/api/events', eventRoutes);
+app.use('/events', eventRoutes);
+
 app.use('/api', planningRoutes);
+app.use('/', planningRoutes);
+
 app.use('/api', aiRoutes);
+app.use('/', aiRoutes);
+
 app.use('/api', ideaRoutes);
+app.use('/', ideaRoutes);
+
 app.use('/api', exportRoutes);
+app.use('/', exportRoutes);
 
 // Health check
-app.get('/api/health', (_req: Request, res: Response) => {
+app.get(['/api/health', '/health'], (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // ===========================================
-// Static Files (Production)
+// Static Files (Production standalone mode)
 // ===========================================
-if (process.env['NODE_ENV'] === 'production') {
+if (process.env['NODE_ENV'] === 'production' && !process.env['VERCEL']) {
   const clientDist = path.join(__dirname, '../../client');
   app.use(express.static(clientDist));
 
@@ -73,11 +82,13 @@ if (process.env['NODE_ENV'] === 'production') {
 app.use(errorHandler);
 
 // ===========================================
-// Start Server
+// Start Server (only in standalone / non-serverless runtime)
 // ===========================================
-app.listen(PORT, () => {
-  process.stdout.write(`EventCraft AI server running on http://localhost:${PORT}\n`);
-  process.stdout.write(`Environment: ${process.env['NODE_ENV'] || 'development'}\n`);
-});
+if (!process.env['VERCEL'] && process.env['NODE_ENV'] !== 'test') {
+  app.listen(PORT, () => {
+    process.stdout.write(`EventCraft AI server running on http://localhost:${PORT}\n`);
+    process.stdout.write(`Environment: ${process.env['NODE_ENV'] || 'development'}\n`);
+  });
+}
 
 export default app;
