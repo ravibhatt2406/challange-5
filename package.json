@@ -1,0 +1,73 @@
+{
+  "name": "eventcraft-ai",
+  "version": "1.0.0",
+  "description": "GenAI-powered event planning assistant for weddings, birthdays, and community events",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n client,server -c blue,green \"vite\" \"tsx watch src/server/index.ts\"",
+    "dev:client": "vite",
+    "dev:server": "tsx watch src/server/index.ts",
+    "build": "tsc -b && npm run build:server && vite build",
+    "build:server": "tsc -p tsconfig.server.json",
+    "preview": "vite preview",
+    "server:start": "node dist/server/server/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/ tests/",
+    "type-check": "tsc --noEmit",
+    "verify": "node scripts/verify.mjs"
+  },
+  "keywords": [
+    "event-planning",
+    "genai",
+    "gemini",
+    "wedding",
+    "birthday",
+    "community"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@google/genai": "^2.31.0",
+    "@supabase/supabase-js": "^2.118.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "autoprefixer": "^10.6.1",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "helmet": "^8.3.0",
+    "postcss": "^8.5.31",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.6",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.5",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "@vitest/coverage-v8": "^5.0.5",
+    "concurrently": "^10.0.6",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "jsdom": "^29.1.1",
+    "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^5.0.5"
+  }
+}
